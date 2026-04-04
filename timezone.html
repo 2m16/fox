@@ -15,7 +15,7 @@
         #central-clock-container {
             position: absolute;
             top: 93%;
-            left: 91%;
+            left: 90%;
             transform: translate(-50%, -50%);
             z-index: 1000;
             color: white;
@@ -81,10 +81,6 @@
         maxZoom: 18,
         zoomControl: false
     });
-
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap & CartoDB'
-    }).addTo(map);
 
     const labels = [];
     const zoneLines = [];
