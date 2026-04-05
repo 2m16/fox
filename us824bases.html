@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>US824,NATO</title>
+    <title>US824</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; overflow: hidden; background: #0b0e14; }
@@ -1226,8 +1226,30 @@ const cities = [
     { name: "Charlottetown, PE", lat: 46.2382, lon: -63.1311 },
     { name: "Whitehorse, YT", lat: 60.7212, lon: -135.0568 },
     { name: "Yellowknife, NT", lat: 62.4540, lon: -114.3718 },
-    { name: "Iqaluit, NU", lat: 63.7467, lon: -68.5170 },
-	
+    { name: "Iqaluit, NU", lat: 63.7467, lon: -68.5170 }
+];
+
+
+// Хотуудыг зураг дээр дугуй цэгээр зурах
+cities.forEach(city => {
+    L.circleMarker([city.lat, city.lon], {
+        radius: 1,              // Цэгийн хэмжээ
+        fillColor: "#00d4ff",   // Дотор талын өнгө (тод цэнхэр)
+        color: "#fff",          // Хүрээний өнгө
+        weight: 0,            // Хүрээний зузаан
+        opacity: 0,
+        fillOpacity: 1
+    })
+    .bindTooltip(city.name, { direction: 'top', className: 'city-tooltip' }) // Хот дээр очиход нэр нь харагдана
+    .addTo(map);
+});
+
+
+
+
+
+
+const ukrcities = [
     // --- Украйны Нийслэл болон Хойд бүс ---
     { name: "Kyiv", lat: 50.4501, lon: 30.5234, type: "Capital" },
     { name: "Chernihiv", lat: 51.4982, lon: 31.2893, type: "Strategic" },
@@ -1257,18 +1279,22 @@ const cities = [
 
 
 // Хотуудыг зураг дээр дугуй цэгээр зурах
-cities.forEach(city => {
+ukrcities.forEach(city => {
     L.circleMarker([city.lat, city.lon], {
-        radius: 1,              // Цэгийн хэмжээ
-        fillColor: "#00d4ff",   // Дотор талын өнгө (тод цэнхэр)
-        color: "#fff",          // Хүрээний өнгө
-        weight: 0,            // Хүрээний зузаан
-        opacity: 0,
-        fillOpacity: 1
+        radius: 15,              // Цэгийн хэмжээ
+        fillColor: "#ff0066",   // Дотор талын өнгө (тод цэнхэр)
+        color: "#ff0066",          // Хүрээний өнгө
+        weight: 1,            // Хүрээний зузаан
+        opacity: 0.3,
+        fillOpacity: 0
     })
     .bindTooltip(city.name, { direction: 'top', className: 'city-tooltip' }) // Хот дээр очиход нэр нь харагдана
     .addTo(map);
 });
+
+
+
+
 
 
 
