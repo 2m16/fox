@@ -170,20 +170,14 @@
 	];
 
     cityLocations.forEach(city => {
-		L.circleMarker([city.lat, city.lon], {
-			radius: 8,              // Цэгийн хэмжээ
-			fillColor: "#FFF",   // Дотор талын өнгө
-			color: "#fff",          // Хүрээний өнгө
-			weight: 1,            // Хүрээний зузаан
-			opacity: 0,
-			fillOpacity: 0
-    })
-		.bindTooltip(city.name, { direction: 'top', className: 'city-tooltip' }) // Хот дээр очиход нэр нь харагдана
-    .addTo(map);
-});
-
-	
-
+        L.circleMarker([city.lat, city.lon], {
+            radius: 4,
+			fillColor: city.color,
+			color: "#fff",
+			weight: 1,
+			fillOpacity: 1
+        }).bindTooltip(city.name).addTo(map);
+    });
 
 
 	
