@@ -46,7 +46,7 @@
     		border-collapse: collapse;
     		width: auto;				/* Хүснэгт 100% биш, зөвхөн баганын өргөнөөрөө байна */
     		color: #888;
-    		font-size: 16px;			/* хүснэгтийн текстийг бүхэлд нь өөрчлөнө */
+    		font-size: 12px;			/* хүснэгтийн текстийг бүхэлд нь өөрчлөнө */
     		text-align: left;			/* хүснэгтийн текстийг бүгдийг аль нэг тал руу шахах */
     		white-space: nowrap;		/* Текстүүдийг доошоо таслахгүй, баруун тийш цувуулна */
 		}
@@ -57,9 +57,9 @@
 			position: sticky;
 			top: 0;
 			border: 1px solid #222;
-			font-size: 16px;
+			font-size: 12px;
 			color: #888;
-			font-weight: thin;
+			font-weight: bold;
 		}
         #info-table td { border: 1px solid #222; padding: 4px; }
 
@@ -1576,7 +1576,7 @@ oceaniaCapitals.forEach(city => {
         .then(res => res.json())
         .then(data => {
             L.geoJSON(data, {
-                style: { color: '#fff', weight: 0.3, fillColor: "#0066ff", fillOpacity: 0.1 }
+                style: { color: '#fff', weight: 0.1, fillColor: "#0066ff", fillOpacity: 0.03 }
             }).addTo(map);
         });
 
@@ -1613,7 +1613,7 @@ oceaniaCapitals.forEach(city => {
     // 7. LEFT BOTTOM CORNER TABLE - ШИНЭЧЛЭГДСЭН
 	const thr = document.getElementById('table-header');
 	thr.innerHTML = ""; // Хуучныг цэвэрлэх
-	const headers = ["ID", "LOCATION", "TIME", "PTS", "STATUS", "P-RANK", "NEW Col"]; // Баганын нэрс
+	const headers = ["#", "БАЙРШИЛ", "УТГА", "УТГА", "СТАТУС", "УТГА", "УТГА"]; // Баганын нэрс
 	headers.forEach(h => thr.innerHTML += `<th>${h}</th>`);
 
 	// Шинэ мөр нэмдэг функц
