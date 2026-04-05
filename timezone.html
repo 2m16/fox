@@ -1,143 +1,167 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="mn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real-Time World Time Zone</title>
-    
+    <title>F1 Tracker - Refined & Stable</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; }
-        #map { height: 100vh; width: 100vw; background: #0b0e14; }
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; overflow: hidden; background: #0b0e14; }
+        #map { height: 100vh; width: 100vw; z-index: 1; }
 
-        /* Central HUD Styling */
+        /* Цагийн бүсийн шошго - 3 эгнээ */
+        .tz-dynamic-label {
+            background: rgba(10, 15, 20, 0.04); border: 0px solid #fff; color: #fff;
+            padding: 4px 8px; font-size: 10px; border-radius: 2px; text-align: center;
+            display: flex; flex-direction: column; align-items: center; min-width: 55px;
+            transform: translateX(-50%); backdrop-filter: blur(4px);
+        }
+        .tz-row-utc { color: #666666; font-size: 12px; }
+        .tz-row-date { color: #666666; font-size: 12px; margin: 1px 0; }
+        .tz-row-time { font-weight: regular; font-size: 12px; color: #666666; }
+
+
+
+
+
+        /* Зүүн доод хүснэгт */
+        #data-table-container {
+    		position: absolute;
+    		bottom: 20px;
+    		left: 20px;
+    		z-index: 2000;
+    		background: rgba(10, 15, 20, 0.85);
+    		border: 1px solid #333;
+    		backdrop-filter: blur(5px);
+
+    	/* Скроллдохгүй болгох тохиргоо: */
+    		overflow: visible;         /* Доторх зүйл нь ил гарвал контейнер дагаж томорно */
+    		height: auto;              /* Өндөр нь мөр нэмэгдэхэд автоматаар сунана */
+    		width: fit-content;        /* Өргөн нь багана нэмэгдэхэд баруун тийш сунана */
+    		max-height: none;          /* Өндрийн дээд хязгаарыг цуцлах */
+		}
+		/* ХҮСНЭГТИЙН ФОНТ ХЭМЖЭЭ */
+		#info-table {
+    		border-collapse: collapse;
+    		width: auto;				/* Хүснэгт 100% биш, зөвхөн баганын өргөнөөрөө байна */
+    		color: #888;
+    		font-size: 16px;			/* хүснэгтийн текстийг бүхэлд нь өөрчлөнө */
+    		text-align: left;			/* хүснэгтийн текстийг бүгдийг аль нэг тал руу шахах */
+    		white-space: nowrap;		/* Текстүүдийг доошоо таслахгүй, баруун тийш цувуулна */
+		}
+            
+        #info-table th { 
+			background: #1a1a1a;
+			padding: 5px;
+			position: sticky;
+			top: 0;
+			border: 1px solid #222;
+			font-size: 16px;
+			color: #888;
+			font-weight: thin;
+		}
+        #info-table td { border: 1px solid #222; padding: 4px; }
+
+
+		#data-table-container {
+			/* ... бусад кодууд ... */
+			display: block; /* "display: none" хүснэгт нууна, "display: block" хүснэгт ил гаргана */
+		}
+
+
+
+
+        /* Баруун доод цаг */
         #central-clock-container {
-            position: absolute;
-            top: 95%;
-            left: 90%;
-            transform: translate(-50%, -50%);
-            z-index: 1000;
-            color: #555;
-            pointer-events: none;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.8);
+            position: absolute; bottom: 20px; right: 20px; z-index: 1000;
+            color: #888; text-align: right;
         }
-        .clock-row { display: flex; align-items: baseline; margin-bottom: 5px; }
-        .clock-label { font-size: 20px; color: #555; width: 150px; text-align: right; margin-right: 20px; }
-        .clock-value { font-size: 36px; font-weight: regular; letter-spacing: 1px; }
-
-        /* Time Zone Label Styling */
-        .tz-label {
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            text-align: Center;
-            font-size: 11px;
-            line-height: 1.2;
-            border: 1px solid rgba(255,255,255,0.2);
-            pointer-events: none;
-            white-space: nowrap;
-        }
-        .tz-time { font-weight: regular; color: #5F98D8; font-size: 13px; }
-        .tz-date { color: #ccc; }
-        .tz-zone { color: #eedc83; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* Overlay for Day/Night */
-        .solar-terminator {
-            fill: rgba(0, 0, 0, 0.5);
-            stroke: rgba(255, 255, 255, 0.1);
-            stroke-width: 1;
-        }
+        .clock-value { font-size: 32px; font-weight: thin; color: #fff; line-height: 1; }
+        .clock-label { font-size: 12px; font-weight: thin; color: #fff; margin-top: 5px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
-<div id="central-clock-container">
-    <div class="clock-row">
-        <div class="clock-label"></div>
-        <div id="hud-date" class="clock-value">--.--.----</div>
-    </div>
-    <div class="clock-row">
-        <div class="clock-label"></div>
-        <div id="hud-day" class="clock-value">---</div>
-    </div>
-    <div class="clock-row">
-        <div class="clock-label">ULAANBAATAR</div>
-        <div id="hud-time" class="clock-value">00:00</div>
-    </div>
+
+
+
+
+<div id="data-table-container">
+    <table id="info-table">
+        <thead><tr id="table-header"></tr></thead>
+        <tbody id="table-body"></tbody>
+    </table>
 </div>
+
+<div id="central-clock-container">
+    <div id="hud-date">--.--.----</div>
+    <div id="hud-day">---</div>
+    <div class="clock-label">LOCAL TIME</div>
+    <div id="hud-time" class="clock-value">00:00</div>
+</div>
+
+
+
 
 <div id="map"></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/@joergdietrich/leaflet.terminator"></script>
 
 <script>
-    // Initialize Map
+
+
+
+
+	// 1. MAP Газрын зураг
     const map = L.map('map', {
-        center: [20, 0],
-        zoom: 4,
-        minZoom: 2,
-        maxZoom: 18,
-        zoomControl: false
+        center: [20, 25], zoom: 3, minZoom: 4,
+        zoomControl: false, attributionControl: false, worldCopyJump: true
     });
 
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
 
-    const labels = [];
-    const zoneLines = [];
-    let nightLayer = null;
-
-    function initGrid() {
-	// Тэмдэглэх хотуудын жагсаалт (Нэр, Өргөрөг, Уртраг)
-
-// ФОРМУЛА-1 2026 ОНЫ ХОТУУД
-// 2026 оны Формула-1-ийн уралдааны замуудын дата
-const f1Tracks2026 = [
-  { name: "Sakhir, Bahrain, Feb 11-13, 18-28, 2026", lat: 26.0325, lon: 50.5106 },
-  { name: "Melbourne, Australia, Mar 06-08, 2026", lat: -37.8497, lon: 144.9680 },
-  { name: "Suzuka, Japan, Mar 27-29, 2026", lat: 34.8431, lon: 136.5410 },
-  { name: "Shanghai, China, Mar 13-15, 2026", lat: 31.3389, lon: 121.2200 },
-  { name: "Miami, USA, May 01-03, 2026", lat: 25.9581, lon: -80.2389 },
-  { name: "Monaco, Monaco, Jun 05-07, 2026", lat: 43.7347, lon: 7.4206 },
-  { name: "Barcelona, Spain, Jun 12-14, 2026", lat: 41.5700, lon: 2.2611 },
-  { name: "Montreal, Canada, May 22-24, 2026", lat: 45.5000, lon: -73.5228 },
-  { name: "Spielberg, Austria, Jun 26-28, 2026", lat: 47.2197, lon: 14.7647 },
-  { name: "Silverstone, UK, Jul 03-05, 2026", lat: 52.0786, lon: -1.0169 },
-  { name: "Spa-Francorchamps, Belgium, Jul 17-19, 2026", lat: 50.4372, lon: 5.9714 },
-  { name: "Budapest, Hungary, Jul 24-26, 2026", lat: 47.5830, lon: 19.2505 },
-  { name: "Zandvoort, Netherlands, Aug 21-23, 2026", lat: 52.3888, lon: 4.5409 },
-  { name: "Monza, Italy, Sep 04-06, 2026", lat: 45.6156, lon: 9.2811 },
-  { name: "Baku, Azerbaijan, Sep 24-26, 2026", lat: 40.3725, lon: 49.8533 },
-  { name: "Singapore, Singapore, Oct 09-11, 2026", lat: 1.2914, lon: 103.8640 },
-  { name: "Austin, USA, Oct 23-25, 2026", lat: 30.1328, lon: -97.6411 },
-  { name: "Mexico City, Mexico, Oct 30-Nov 01, 2026", lat: 19.4042, lon: -99.0907 },
-  { name: "Sao Paulo, Brazil, Nov 06-08, 2026", lat: -23.7036, lon: -46.6997 },
-  { name: "Las Vegas, USA, Nov 19-21, 2026", lat: 36.1147, lon: -115.1728 },
-  { name: "Lusail, Qatar, Nov 27-29, 2026", lat: 25.4900, lon: 51.4542 },
-  { name: "Abu Dhabi, UAE, Dec 04-06, 2026", lat: 24.4672, lon: 54.6031 },
-  { name: "Madrid, Spain, Sep 11-13, 2026", lat: 40.4639, lon: -3.6156 }
-];
-
-// Хотуудыг нэмэх функц (Таны кодын cities массив дотор нэмж болно)
-f1Tracks2026.forEach(city => {
-    L.circleMarker([city.lat, city.lon], {
-        radius: 10,
-        fillColor: "0",   // Дотор талын өнгө (тод ягаан)
-        color: "#F641F0",     // Хүрээний өнгө
-        weight: 0.6,            // Хүрээний зузаан
-        opacity: 1,
-        fillOpacity: 0
-    })
-    .bindTooltip(city.name, { 
-        direction: 'top', 
-        className: 'city-label',
-        offset: [0, -5]
-    })
-    .addTo(map);
-});
 
 
+
+	// 2. SHADOW Нарны сүүдэр
+    let terminator = L.terminator({ fillOpacity: 0.3, color: '#ffffff', weight: 0.1 }).addTo(map);
+
+    
+    
+    // 3. CITIES
+    const cityLocations = [
+		// 2026 оны Формула-1-ийн уралдааны замуудын дата
+        { name: "Sakhir, Bahrain, Feb 11-13, 18-28, 2026", lat: 26.0325, lon: 50.5106, color: "#FFFF00" },
+		{ name: "Melbourne, Australia, Mar 06-08, 2026", lat: -37.8497, lon: 144.9680, color: "#FF1801" },
+		{ name: "Shanghai, China, Mar 13-15, 2026", lat: 31.3389, lon: 121.2200, color: "#FF1801" },
+        { name: "Suzuka, Japan, Mar 27-29, 2026", lat: 34.8431, lon: 136.5410, color: "#FF1801" },
+		{ name: "Miami, USA, May 01-03, 2026", lat: 25.9581, lon: -80.2389 },
+		{ name: "Montreal, Canada, May 22-24, 2026", lat: 45.5000, lon: -73.5228 },
+        { name: "Monaco, Monaco, Jun 05-07, 2026", lat: 43.7347, lon: 7.4206 },
+		{ name: "Barcelona, Spain, Jun 12-14, 2026", lat: 41.5700, lon: 2.2611 },
+		{ name: "Spielberg, Austria, Jun 26-28, 2026", lat: 47.2197, lon: 14.7647 },
+		{ name: "Silverstone, UK, Jul 03-05, 2026", lat: 52.0786, lon: -1.0169 },
+		{ name: "Spa-Francorchamps, Belgium, Jul 17-19, 2026", lat: 50.4372, lon: 5.9714 },
+		{ name: "Budapest, Hungary, Jul 24-26, 2026", lat: 47.5830, lon: 19.2505 },
+		{ name: "Zandvoort, Netherlands, Aug 21-23, 2026", lat: 52.3888, lon: 4.5409 },
+		{ name: "Monza, Italy, Sep 04-06, 2026", lat: 45.6156, lon: 9.2811 },
+		{ name: "Madrid, Spain, Sep 11-13, 2026", lat: 40.4639, lon: -3.6156 },
+        { name: "Baku, Azerbaijan, Sep 24-26, 2026", lat: 40.3725, lon: 49.8533 },
+		{ name: "Singapore, Singapore, Oct 09-11, 2026", lat: 1.2914, lon: 103.8640 },
+		{ name: "Austin, USA, Oct 23-25, 2026", lat: 30.1328, lon: -97.6411 },
+        { name: "Mexico City, Mexico, Oct 30-Nov 01, 2026", lat: 19.4042, lon: -99.0907 },
+		{ name: "Sao Paulo, Brazil, Nov 06-08, 2026", lat: -23.7036, lon: -46.6997 },
+		{ name: "Las Vegas, USA, Nov 19-21, 2026", lat: 36.1147, lon: -115.1728 },
+		{ name: "Lusail, Qatar, Nov 27-29, 2026", lat: 25.4900, lon: 51.4542 },
+		{ name: "Abu Dhabi, UAE, Dec 04-06, 2026", lat: 24.4672, lon: 54.6031 }
+	];
+
+    cityLocations.forEach(city => {
+        L.circleMarker([city.lat, city.lon], {
+            radius: 4, fillColor: city.color, color: "#fff", weight: 1, fillOpacity: 1
+        }).bindTooltip(city.name).addTo(map);
+    });
 
 
 const cities = [
@@ -681,116 +705,152 @@ oceaniaCapitals.forEach(city => {
 
 
 
-        for (let i = -12; i <= 12; i++) {
-            const lon = i * 15;
-            const line = L.polyline([[90, lon], [-90, lon]], {
-                color: 'rgba(255,255,255,0.3)',
-                weight: 1,
-                dashArray: '1, 4'
+
+
+
+
+
+
+
+
+
+    // 4. AIRPLANE TRACE (Bezier Curve эффектээр зурах скрипт)
+    function drawFlightPath(start, end) {
+        const latlngs = [];
+        const offsetX = end.lon - start.lon, offsetY = end.lat - start.lat;
+        const r = Math.sqrt(Math.pow(offsetX, 2) + Math.pow(offsetY, 2));
+        const theta = Math.atan2(offsetY, offsetX);
+        const thetaOffset = 0.2; // Нумын өндөр
+
+        for (let i = 0; i <= 100; i++) {
+            const t = i / 100;
+            const x = start.lon + offsetX * t;
+            const y = start.lat + offsetY * t + Math.sin(Math.PI * t) * (r * thetaOffset);
+            latlngs.push([y, x]);
+        }
+        L.polyline(latlngs, { color: '#ffffff', weight: 1, opacity: 0.5, dashArray: '3, 6' }).addTo(map);
+    }
+
+    // Дараалсан хотуудыг холбох зурах обьект
+    for (let i = 0; i < cityLocations.length - 1; i++) {
+        drawFlightPath(cityLocations[i], cityLocations[i+1]);
+    }
+
+
+
+
+
+    // 5. STATE BORDER and FILLING. Улсын 3 тэмдэгт ISO 3166-1 alpha-3 кодыг https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 авна
+    fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/MNG.geo.json')
+        .then(res => res.json())
+        .then(data => {
+            L.geoJSON(data, {
+                style: { color: '#ffffff', weight: 0.2, fillColor: '#FF1801', fillOpacity: 0.2 }
             }).addTo(map);
-            zoneLines.push({ line, offset: i });
-
-            const labelIcon = L.divIcon({
-                className: 'tz-label-container',
-                html: `<div id="tz-label-${i}" class="tz-label">
-                        <div class="tz-time">--:--</div>
-                        <div class="tz-date">---</div>
-                        <div class="tz-zone">UTC ${i >= 0 ? '+' + i : i}</div>
-                       </div>`,
-                iconSize: [80, 50],
-                iconAnchor: [40, 0]
-            });
-
-            const marker = L.marker([70, lon], { icon: labelIcon }).addTo(map);
-            labels.push({ marker, offset: i });
-        }
-    }
-
-
-
-
-let nightLayers = []; // Гурван давхаргыг хадгалах массив
-
-function updateSolarTerminator() {
-    // 1. Өмнөх бүх давхаргуудыг устгах
-    nightLayers.forEach(layer => map.removeLayer(layer));
-    nightLayers = [];
-
-    const now = new Date();
-    const julianDay = (now / 86400000) - (now.getTimezoneOffset() / 1440) + 2440587.5;
-    const T = (julianDay - 2451545.0) / 36525;
-    const L0 = 280.46646 + 36000.76983 * T;
-    const M = 357.52911 + 35999.05029 * T;
-    const lambda = L0 + 1.914666 * Math.sin(M * Math.PI / 180);
-    const epsilon = 23.43929 - 0.01300 * T;
-    const delta = Math.asin(Math.sin(epsilon * Math.PI / 180) * Math.sin(lambda * Math.PI / 180)) * 180 / Math.PI;
-    const utcMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
-    const sunLon = 180 - (utcMinutes / 4);
-
-    // 2. Гурван дэлхийд зориулсан offset-ууд
-    const offsets = [-360, 0, 360];
-
-    offsets.forEach(offset => {
-        const latPoints = [];
-        for (let lon = -180; lon <= 180; lon += 2) { // 2 градус тутамд авбал хурд илүү сайн байна
-            const lat = Math.atan(-Math.cos((lon - sunLon) * Math.PI / 180) / Math.tan(delta * Math.PI / 180)) * 180 / Math.PI;
-            // Тухайн цэг дээр offset-ийг нэмж байна
-            latPoints.push([lat, lon + offset]);
-        }
-
-        const nightPath = delta > 0 
-            ? [[-90, -180 + offset], ...latPoints, [-90, 180 + offset], [-90, -180 + offset]] 
-            : [[90, -180 + offset], ...latPoints, [90, 180 + offset], [90, -180 + offset]];
-
-        const layer = L.polygon(nightPath, {
-            fillColor: '#000',
-            fillOpacity: 0.5, // 0.7-оос бага зэрэг багасгавал газрын зураг илүү сайн харагдана
-            stroke: false,
-            interactive: false
-        }).addTo(map);
-
-        nightLayers.push(layer);
-    });
-}
-    
-    
-    
-    
-    
-    
-
-    function updateClocks() {
-        const now = new Date();
-
-        // Update Central HUD
-        const pad = (n) => n.toString().padStart(2, '0');
-        document.getElementById('hud-date').innerText = now.toLocaleDateString('en-US', { 
-    month: 'long', 
-    day: 'numeric', 
-    year: 'numeric' 
-});
-        document.getElementById('hud-day').innerText = now.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
-        document.getElementById('hud-time').innerText = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
-
-        // Update Timezone Labels
-        labels.forEach(item => {
-            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-            const zoneDate = new Date(utc + (3600000 * item.offset));
-            const timeStr = zoneDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-            const dateStr = zoneDate.toLocaleDateString([], { month: 'short', day: 'numeric' });
-            const el = document.getElementById(`tz-label-${item.offset}`);
-            if (el) {
-                el.querySelector('.tz-time').innerText = timeStr;
-                el.querySelector('.tz-date').innerText = dateStr;
-            }
         });
+
+	fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/DEU.geo.json')
+
+        .then(res => res.json())
+        .then(data => {
+            L.geoJSON(data, {
+                style: { color: '#ffffff', weight: 0.2, fillColor: '#00ccff', fillOpacity: 0.2 }
+            }).addTo(map);
+        });
+
+
+
+
+    // 6. TIMEZONE VERTICAL LINE and LABEL
+    const tzLayers = [];
+    for (let offset = -12; offset <= 12; offset++) {
+        const lon = offset * 15;
+        L.polyline([[90, lon], [-90, lon]], { color: '#999', weight: 0.3, dashArray: '2, 10' }).addTo(map);
+        
+        const label = L.marker([0, lon], {
+            icon: L.divIcon({
+                className: 'tz-wrap',
+                html: `<div class="tz-dynamic-label">
+                    <div class="tz-row-utc">UTC ${offset>=0?'+'+offset:offset}</div>
+                    <div class="tz-row-date" id="tz-d-${offset}">--- --</div>
+                    <div class="tz-row-time" id="tz-t-${offset}">--:--</div>
+                </div>`,
+                iconSize: [0, 0]
+            })
+        }).addTo(map);
+        
+        tzLayers.push({ offset, label });
     }
 
-    initGrid();
-    updateClocks();
-    updateSolarTerminator();
-    setInterval(updateClocks, 1000);
-    setInterval(updateSolarTerminator, 1000);
+
+    
+
+    
+    
+    // 7. LEFT BOTTOM CORNER TABLE - ШИНЭЧЛЭГДСЭН
+	const thr = document.getElementById('table-header');
+	thr.innerHTML = ""; // Хуучныг цэвэрлэх
+	const headers = ["ID", "LOCATION", "TIME", "PTS", "STATUS", "P-RANK", "NEW Col"]; // Баганын нэрс
+	headers.forEach(h => thr.innerHTML += `<th>${h}</th>`);
+
+	// Шинэ мөр нэмдэг функц
+	function addRow(dataArray) {
+    	const tby = document.getElementById('table-body');
+    	const tr = document.createElement('tr');
+    	dataArray.forEach(text => {
+        	const td = document.createElement('td');
+        	td.innerText = text;
+        	tr.appendChild(td);
+    });
+    	tby.appendChild(tr); // Шинэ мөр нэмэгдэхэд хүснэгт дээшээ сунана
+	}
+
+// Жишээ өгөгдлүүд нэмэх (Энэ мөрүүдийг нэмэх бүрд хүснэгт дээшээ тэлнэ)
+addRow(["01", "Bahrain", "1:30.456", "25", "Finished", "P1", "1234"]);
+addRow(["02", "Jeddah", "1:28.123", "18", "Finished", "P2", "xxx"]);
+addRow(["03", "Melbourne", "--:--.---", "0", "Scheduled", "TBD", "kk"]);
+
+
+
+
+
+    // 8. UPDATE LOOP
+    function sync() {
+        const now = new Date();
+        const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+        
+        map.removeLayer(terminator);
+        terminator = L.terminator({ fillOpacity: 0.3, color: '#ffffff', weight: 0.1 }).addTo(map);
+        
+        const north = map.getBounds().getNorth();
+        tzLayers.forEach(tz => {
+            const zd = new Date(utc + (3600000 * tz.offset));
+            const mon = zd.toLocaleString('en-US', { month: 'short' });
+            const day = zd.getDate().toString().padStart(2, '0');
+            const tim = zd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+            
+            document.getElementById(`tz-d-${tz.offset}`).innerText = `${mon} ${day}`;
+            document.getElementById(`tz-t-${tz.offset}`).innerText = tim;
+           
+           
+           
+           
+           
+            // 9. TIMEZONE LABEL VERTICAL POSITION
+            const margin = 1 / Math.pow(2, map.getZoom() - 2); 
+            tz.label.setLatLng([north - margin, tz.offset * 15]);
+        });
+
+        const p = (n) => n.toString().padStart(2, '0');
+        document.getElementById('hud-date').innerText = now.toLocaleDateString('en-GB').replace(/\//g, '.');
+        document.getElementById('hud-day').innerText = now.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
+        document.getElementById('hud-time').innerText = `${p(now.getHours())}:${p(now.getMinutes())}`;
+    }
+
+    map.on('move zoom', sync);
+    setInterval(sync, 1000);
+    sync();
+
 </script>
 </body>
 </html>
