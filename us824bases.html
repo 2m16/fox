@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>US824</title>
+    <title>US824,NATO</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; overflow: hidden; background: #0b0e14; }
@@ -1028,6 +1028,106 @@ usaStrategicBases.forEach(base => {
 });
 
 
+
+
+
+
+
+const natoStrategicBases = [
+    // --- ГЕРМАН (Төв болон Агаарын хяналт) ---
+    { name: "NATO: Ramstein Air Base, Germany", lat: 49.4367, lon: 7.5911, cmd: "EUCOM" },
+    { name: "NATO: Geilenkirchen Air Base (AWACS), Germany", lat: 50.9592, lon: 6.0431, cmd: "EUCOM" },
+    { name: "NATO: Spangdahlem Air Base, Germany", lat: 49.9722, lon: 6.6917, cmd: "EUCOM" },
+    { name: "NATO: Panzer Kaserne (USAG Stuttgart), Germany", lat: 48.6841, lon: 9.0494, cmd: "EUCOM" },
+    { name: "NATO: Baumholder Military Community, Germany", lat: 49.6481, lon: 7.3386, cmd: "EUCOM" },
+    { name: "NATO: Vilseck (Rose Barracks), Germany", lat: 49.6256, lon: 11.7758, cmd: "EUCOM" },
+    { name: "NATO: Grafenwoehr Training Area, Germany", lat: 49.7136, lon: 11.9058, cmd: "EUCOM" },
+
+    // --- БЕЛЬГИ, НИДЕРЛАНД, ЛЮКСЕМБУРГ (Удирдлага) ---
+    { name: "NATO: Headquarters Brussels, Belgium", lat: 50.8708, lon: 4.4258, cmd: "EUCOM" },
+    { name: "NATO: SHAPE Headquarters, Mons, Belgium", lat: 50.4994, lon: 3.9806, cmd: "EUCOM" },
+    { name: "NATO: Kleine Brogel Air Base, Belgium", lat: 51.1714, lon: 5.4633, cmd: "EUCOM" },
+    { name: "NATO: JFC Brunssum, Netherlands", lat: 50.9419, lon: 5.9686, cmd: "EUCOM" },
+    { name: "NATO: Volkel Air Base, Netherlands", lat: 51.6567, lon: 5.7067, cmd: "EUCOM" },
+
+    // --- ИТАЛИ (Өмнөд жигүүр) ---
+    { name: "NATO: Aviano Air Base, Italy", lat: 46.0319, lon: 12.5964, cmd: "EUCOM" },
+    { name: "NATO: Vicenza (Camp Ederle), Italy", lat: 45.5483, lon: 11.5656, cmd: "EUCOM" },
+    { name: "NATO: Sigonella Naval Air Station, Italy", lat: 37.4017, lon: 14.9222, cmd: "EUCOM" },
+    { name: "NATO: JFC Naples, Italy", lat: 40.9167, lon: 14.1333, cmd: "EUCOM" },
+    { name: "NATO: Ghedi Air Base, Italy", lat: 45.4289, lon: 10.2689, cmd: "EUCOM" },
+
+    // --- ПОЛЬШ, БАЛТЫН ОРНУУД (Зүүн жигүүр) ---
+    { name: "NATO: Redzikowo Aegis Ashore, Poland", lat: 54.4764, lon: 17.1100, cmd: "EUCOM" },
+    { name: "NATO: Powidz Air Base, Poland", lat: 52.3783, lon: 17.8539, cmd: "EUCOM" },
+    { name: "NATO: Lask Air Base, Poland", lat: 51.5517, lon: 19.1786, cmd: "EUCOM" },
+    { name: "NATO: Šiauliai Air Base, Lithuania", lat: 55.8939, lon: 23.3944, cmd: "EUCOM" },
+    { name: "NATO: Ämari Air Base, Estonia", lat: 59.2594, lon: 24.2147, cmd: "EUCOM" },
+    { name: "NATO: Lielvārde Air Base, Latvia", lat: 56.7769, lon: 24.8519, cmd: "EUCOM" },
+
+    // --- РУМЫН, БОЛГАР, ГРЕК ---
+    { name: "NATO: Mihail Kogălniceanu Air Base, Romania", lat: 44.3622, lon: 28.4811, cmd: "EUCOM" },
+    { name: "NATO: Deveselu Aegis Ashore, Romania", lat: 44.0686, lon: 24.4125, cmd: "EUCOM" },
+    { name: "NATO: Souda Bay Naval Base, Greece", lat: 35.4925, lon: 24.1489, cmd: "EUCOM" },
+    { name: "NATO: Bezmer Air Base, Bulgaria", lat: 42.4547, lon: 26.3522, cmd: "EUCOM" },
+
+    // --- ТУРК (Зүүн өмнөд) ---
+    { name: "NATO: Incirlik Air Base, Turkey", lat: 37.0019, lon: 35.4258, cmd: "EUCOM" },
+    { name: "NATO: Izmir Air Station, Turkey", lat: 38.4189, lon: 27.1287, cmd: "EUCOM" },
+    { name: "NATO: Kürecik Radar Station, Turkey", lat: 38.3542, lon: 37.9408, cmd: "EUCOM" },
+
+    // --- ХОЙД ЕВРОП (Финлянд, Норвеги) ---
+    { name: "NATO: Rovaniemi Air Base, Finland", lat: 66.5647, lon: 25.8303, cmd: "EUCOM" },
+    { name: "NATO: Evenes Air Station, Norway", lat: 68.4914, lon: 16.6781, cmd: "EUCOM" },
+    { name: "NATO: Ørland Air Base, Norway", lat: 63.6989, lon: 9.6136, cmd: "EUCOM" },
+
+    // --- ИСПАНИ, ПОРТУГАЛ, БРИТАНИ ---
+    { name: "NATO: Rota Naval Station, Spain", lat: 36.6453, lon: -6.3478, cmd: "EUCOM" },
+    { name: "NATO: Morón Air Base, Spain", lat: 37.1750, lon: -5.6150, cmd: "EUCOM" },
+    { name: "NATO: Lajes Field, Azores (Portugal)", lat: 38.7617, lon: -27.0908, cmd: "EUCOM" },
+    { name: "NATO: RAF Lakenheath, UK", lat: 52.4086, lon: 0.5606, cmd: "EUCOM" },
+    { name: "NATO: RAF Mildenhall, UK", lat: 52.3639, lon: 0.4858, cmd: "EUCOM" },
+    { name: "NATO: RAF Fairford, UK", lat: 51.6822, lon: -1.7900, cmd: "EUCOM" }
+];
+
+
+
+
+// НАТО-гийн баазуудыг газрын зураг дээр зурах
+natoStrategicBases.forEach(base => {
+    
+    // 1. Төв цэгт байрлах жижиг тод цэг
+    L.circleMarker([base.lat, base.lon], {
+        radius: 1,            // Хэт жижиг (1) байвал харагдахад хэцүү тул 2 болгов
+        fillColor: "#ff0066", 
+        color: "#ff0066",         
+        weight: 1,            
+        fillOpacity: 1,
+        pane: 'markerPane'    // Бусад элементүүдийн дээр харагдуулах
+    }).addTo(map);
+
+    // 2. Гадна талын том бүдэг тойрог (Радарын хүрээ)
+    L.circleMarker([base.lat, base.lon], {
+        radius: 40,           
+        fillColor: "#ff0066", 
+        color: "#ff0066",  
+        weight: 0.5,      
+        opacity: 0.6,         // Хүрээний тод байдал
+        fillOpacity: 0.1      // 0.05-ыг 0.1 болгож үл ялиг тодруулав
+    })
+    .bindTooltip(base.name, { // 'city.name'-ийг 'base.name' болгож засав
+        direction: 'top', 
+        className: 'city-tooltip',
+        sticky: false          // true бол тип Хулганыг дагаж хөдлөнө. false бол хөдлөхгүй
+    })
+    .addTo(map);
+});
+
+
+
+
+
+
 const cities = [
 	// Монгол улс, аймгийн төвүүд
 	{ name: "Ulaanbaatar", lat: 47.8864, lon: 106.9057 },
@@ -1126,9 +1226,35 @@ const cities = [
     { name: "Charlottetown, PE", lat: 46.2382, lon: -63.1311 },
     { name: "Whitehorse, YT", lat: 60.7212, lon: -135.0568 },
     { name: "Yellowknife, NT", lat: 62.4540, lon: -114.3718 },
-    { name: "Iqaluit, NU", lat: 63.7467, lon: -68.5170 }
+    { name: "Iqaluit, NU", lat: 63.7467, lon: -68.5170 },
 	
+    // --- Украйны Нийслэл болон Хойд бүс ---
+    { name: "Kyiv", lat: 50.4501, lon: 30.5234, type: "Capital" },
+    { name: "Chernihiv", lat: 51.4982, lon: 31.2893, type: "Strategic" },
+    { name: "Sumy", lat: 50.9077, lon: 34.7981, type: "Frontier" },
+
+    // --- Украйны Зүүн бүс (Хамгийн идэвхтэй фронт) ---
+    { name: "Kharkiv", lat: 49.9935, lon: 36.2304, type: "Strategic" },
+    { name: "Donetsk", lat: 48.0159, lon: 37.8028, type: "Contested" },
+    { name: "Luhansk", lat: 48.5740, lon: 39.3078, type: "Contested" },
+    { name: "Bakhmut", lat: 48.5956, lon: 38.0084, type: "Frontline" },
+    { name: "Avdiivka", lat: 48.1451, lon: 37.7448, type: "Frontline" },
+    { name: "Dnipro", lat: 48.4647, lon: 35.0462, type: "Logistics Hub" },
+
+    // --- Украйны Өмнөд бүс болон Хар тэнгис ---
+    { name: "Odesa", lat: 46.4825, lon: 30.7233, type: "Port" },
+    { name: "Kherson", lat: 46.6354, lon: 32.6169, type: "Strategic" },
+    { name: "Mykolaiv", lat: 46.9750, lon: 31.9946, type: "Port" },
+    { name: "Mariupol", lat: 47.0971, lon: 37.5433, type: "Port" },
+    { name: "Zaporizhzhia", lat: 47.8388, lon: 35.1396, type: "Energy Hub" },
+    { name: "Sevastopol (Crimea)", lat: 44.6167, lon: 33.5250, type: "Naval Base" },
+
+    // --- Украйны Баруун бүс (Ложистик ба Ар тал) ---
+    { name: "Lviv", lat: 49.8397, lon: 24.0297, type: "Logistics Hub" },
+    { name: "Vinnytsia", lat: 49.2331, lon: 28.4682, type: "Strategic" },
+    { name: "Ivano-Frankivsk", lat: 48.9226, lon: 24.7111, type: "Strategic" }
 ];
+
 
 // Хотуудыг зураг дээр дугуй цэгээр зурах
 cities.forEach(city => {
@@ -1579,6 +1705,16 @@ oceaniaCapitals.forEach(city => {
                 style: { color: '#fff', weight: 0.1, fillColor: "#0066ff", fillOpacity: 0.03 }
             }).addTo(map);
         });
+
+
+    fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/UKR.geo.json')
+        .then(res => res.json())
+        .then(data => {
+            L.geoJSON(data, {
+                style: { color: '#fff', weight: 0.1, fillColor: "#0066ff", fillOpacity: 0.03 }
+            }).addTo(map);
+        });
+
 
 
 
