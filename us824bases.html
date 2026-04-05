@@ -4,22 +4,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>US824</title>
+    <title>US824,NATO</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; overflow: hidden; background: #0b0e14; }
         #map { height: 100vh; width: 100vw; z-index: 1; }
 
-        /* Цагийн бүсийн шошго - 3 эгнээ */
-        .tz-dynamic-label {
-            background: rgba(10, 15, 20, 0.04); border: 0px solid #fff; color: #fff;
-            padding: 4px 8px; font-size: 10px; border-radius: 2px; text-align: center;
-            display: flex; flex-direction: column; align-items: center; min-width: 55px;
-            transform: translateX(-50%); backdrop-filter: blur(4px);
-        }
-        .tz-row-utc { color: #eedc83; font-size: 12px; }
-        .tz-row-date { color: #f2f2f2; font-size: 12px; margin: 1px 0; }
-        .tz-row-time { font-weight: regular; font-size: 15px; color: #5F98D8; }
+
+
+
+
+		/* Цагийн бүсийн шошго - 3 эгнээ */
+		.tz-dynamic-label {
+			background: rgba(10, 15, 20, 0.04); /* Хайрцагны арын өнгө (тунгалаг хар) */
+			border: 0px solid #fff;             /* Хүрээний зузаан (0 тул харагдахгүй) */
+			color: #fff;                        /* Бичвэрийн үндсэн өнгө (цагаан) */
+			padding: 2px 8px;                   /* Дотор талын зай (Дээд-доод, Баруун-зүүн) */
+			font-size: 10px;                    /* Үндсэн фонтны хэмжээ */
+			border-radius: 2px;                 /* Булангийн бөөрөнхий ирмэг */
+			text-align: center;                 /* Бичвэрийг голлуулах */
+			display: flex;                      /* Уян хатан бүтэц ашиглах */
+			flex-direction: column;             /* Мөрүүдийг дээр дээрээс нь өрөх */
+			align-items: center;                /* Мөрүүдийг хэвтээ тэнхлэгт голлуулах */
+			min-width: 55px;                    /* Хайрцагны хамгийн бага өргөн */
+			transform: translateX(-50%);        /* Байршлыг өөрийнх нь өргөнөөр голлуулж шилжүүлэх */
+			backdrop-filter: blur(4px);         /* Ар талын nền-ийг бүрсийлгэх (шил шиг эффект) */
+			gap: -2px;                          /* Мөр хоорондын зайг хасах утгаар ойртуулах */
+		}
+
+		.tz-row-utc { 
+			color: #eedc83;                     /* UTC бичвэрийн өнгө (шар) */
+			font-size: 12px;                    /* UTC фонтны хэмжээ */
+			line-height: 1.0;                   /* Мөрийн өндрийг шахаж зайг устгах */
+		}
+
+		.tz-row-date { 
+			color: #f2f2f2;                     /* Огнооны өнгө (цайвар саарал) */
+			font-size: 12px;                    /* Огнооны фонтны хэмжээ */
+			margin: 0;                          /* Гадна талын зайг бүрэн устгах */
+			line-height: 1.0;                   /* Мөрийн өндрийг шахаж зайг устгах */
+		}
+
+		.tz-row-time { 
+			font-weight: normal;                /* Фонтны зузаан (normal = 400) */
+			font-size: 15px;                    /* Цагны фонтны хэмжээ (хамгийн том) */
+			color: #5F98D8;                     /* Цагны өнгө (цэнхэр) */
+			line-height: 1.0;                   /* Мөрийн өндрийг шахаж зайг устгах */
+		}
+
 
 
 
@@ -1280,17 +1312,37 @@ const ukrcities = [
 
 // Хотуудыг зураг дээр дугуй цэгээр зурах
 ukrcities.forEach(city => {
+    
+    // 1. Төв цэгт байрлах жижиг тод цэг
     L.circleMarker([city.lat, city.lon], {
-        radius: 15,              // Цэгийн хэмжээ
-        fillColor: "#ff0066",   // Дотор талын өнгө (тод цэнхэр)
-        color: "#ff0066",          // Хүрээний өнгө
-        weight: 1,            // Хүрээний зузаан
-        opacity: 0.3,
-        fillOpacity: 0
+        radius: 1,            // Хэт жижиг (1) байвал харагдахад хэцүү тул 2 болгов
+        fillColor: "#33ff33", 
+        color: "#33ff33",         
+        weight: 1,            
+        fillOpacity: 1,
+        pane: 'markerPane'    // Бусад элементүүдийн дээр харагдуулах
+    }).addTo(map);
+
+    // 2. Гадна талын том бүдэг тойрог (Радарын хүрээ)
+    L.circleMarker([city.lat, city.lon], {
+        radius: 15,           
+        fillColor: "#33ff33", 
+        color: "#33ff33",  
+        weight: 0.5,      
+        opacity: 0.6,         // Хүрээний тод байдал
+        fillOpacity: 0.1      // 0.05-ыг 0.1 болгож үл ялиг тодруулав
     })
-    .bindTooltip(city.name, { direction: 'top', className: 'city-tooltip' }) // Хот дээр очиход нэр нь харагдана
+    .bindTooltip(city.name, { 
+        direction: 'top', 
+        className: 'city-tooltip',
+        sticky: false          // true бол тип Хулганыг дагаж хөдлөнө. false бол хөдлөхгүй
+    })
     .addTo(map);
 });
+
+
+
+
 
 
 
