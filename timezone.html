@@ -171,11 +171,11 @@
 
     cityLocations.forEach(city => {
         L.circleMarker([city.lat, city.lon], {
-            radius: 4,
+            radius: 8,
 			fillColor: city.color,
-			color: "#fff",
+			color: city.color,
 			weight: 1,
-			fillOpacity: 1
+			fillOpacity: 0
         }).bindTooltip(city.name).addTo(map);
     });
 
