@@ -889,7 +889,7 @@ addRow(["03", "Melbourne", "--:--.---", "0", "Scheduled", "TBD", "kk"]);
         });
 
         const p = (n) => n.toString().padStart(2, '0');
-        document.getElementById('hud-date').innerText = now.toLocaleDateString('en-GB').replace(/\//g, '.');
+        document.getElementById('hud-date').innerText = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).replace(/\//g, '.');
         document.getElementById('hud-day').innerText = now.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
         document.getElementById('hud-time').innerText = `${p(now.getHours())}:${p(now.getMinutes())}`;
     }
