@@ -9,16 +9,46 @@
         body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; overflow: hidden; background: #0b0e14; }
         #map { height: 100vh; width: 100vw; z-index: 1; }
 
-        /* Цагийн бүсийн шошго - 3 эгнээ */
-        .tz-dynamic-label {
-            background: rgba(10, 15, 20, 0.04); border: 0px solid #fff; color: #fff;
-            padding: 4px 8px; font-size: 10px; border-radius: 2px; text-align: center;
-            display: flex; flex-direction: column; align-items: center; min-width: 55px;
-            transform: translateX(-50%); backdrop-filter: blur(4px);
-        }
-        .tz-row-utc { color: #eedc83; font-size: 12px; }
-        .tz-row-date { color: #f2f2f2; font-size: 12px; margin: 1px 0; }
-        .tz-row-time { font-weight: regular; font-size: 15px; color: #5F98D8; }
+
+
+		/* Цагийн бүсийн шошго - 3 эгнээ */
+		.tz-dynamic-label {
+			background: rgba(10, 15, 20, 0.04); /* Хайрцагны арын өнгө (тунгалаг хар) */
+			border: 0px solid #fff;             /* Хүрээний зузаан (0 тул харагдахгүй) */
+			color: #fff;                        /* Бичвэрийн үндсэн өнгө (цагаан) */
+			padding: 2px 8px;                   /* Дотор талын зай (Дээд-доод, Баруун-зүүн) */
+			font-size: 10px;                    /* Үндсэн фонтны хэмжээ */
+			border-radius: 2px;                 /* Булангийн бөөрөнхий ирмэг */
+			text-align: center;                 /* Бичвэрийг голлуулах */
+			display: flex;                      /* Уян хатан бүтэц ашиглах */
+			flex-direction: column;             /* Мөрүүдийг дээр дээрээс нь өрөх */
+			align-items: center;                /* Мөрүүдийг хэвтээ тэнхлэгт голлуулах */
+			min-width: 55px;                    /* Хайрцагны хамгийн бага өргөн */
+			transform: translateX(-50%);        /* Байршлыг өөрийнх нь өргөнөөр голлуулж шилжүүлэх */
+			backdrop-filter: blur(4px);         /* Ар талын nền-ийг бүрсийлгэх (шил шиг эффект) */
+			gap: -2px;                          /* Мөр хоорондын зайг хасах утгаар ойртуулах */
+		}
+
+		.tz-row-utc { 
+			color: #eedc83;                     /* UTC бичвэрийн өнгө (шар) */
+			font-size: 12px;                    /* UTC фонтны хэмжээ */
+			line-height: 1.0;                   /* Мөрийн өндрийг шахаж зайг устгах */
+		}
+
+		.tz-row-date { 
+			color: #f2f2f2;                     /* Огнооны өнгө (цайвар саарал) */
+			font-size: 12px;                    /* Огнооны фонтны хэмжээ */
+			margin: 0;                          /* Гадна талын зайг бүрэн устгах */
+			line-height: 1.0;                   /* Мөрийн өндрийг шахаж зайг устгах */
+		}
+
+		.tz-row-time { 
+			font-weight: normal;                /* Фонтны зузаан (normal = 400) */
+			font-size: 15px;                    /* Цагны фонтны хэмжээ (хамгийн том) */
+			color: #5F98D8;                     /* Цагны өнгө (цэнхэр) */
+			line-height: 1.0;                   /* Мөрийн өндрийг шахаж зайг устгах */
+		}
+
 
 
 
@@ -45,7 +75,7 @@
     		border-collapse: collapse;
     		width: auto;				/* Хүснэгт 100% биш, зөвхөн баганын өргөнөөрөө байна */
     		color: #888;
-    		font-size: 16px;			/* хүснэгтийн текстийг бүхэлд нь өөрчлөнө */
+    		font-size: 12px;			/* хүснэгтийн текстийг бүхэлд нь өөрчлөнө */
     		text-align: left;			/* хүснэгтийн текстийг бүгдийг аль нэг тал руу шахах */
     		white-space: nowrap;		/* Текстүүдийг доошоо таслахгүй, баруун тийш цувуулна */
 		}
@@ -56,9 +86,9 @@
 			position: sticky;
 			top: 0;
 			border: 1px solid #222;
-			font-size: 16px;
+			font-size: 12px;
 			color: #888;
-			font-weight: thin;
+			font-weight: bold;
 		}
         #info-table td { border: 1px solid #222; padding: 4px; }
 
