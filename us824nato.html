@@ -1653,11 +1653,11 @@ const ukrcities = [
 ukrcities.forEach(city => {
     // Үндсэн цэг
     L.circleMarker([city.lat, city.lon], {
-        radius: 2,            
+        radius: 1,            
         fillColor: "#33ff33", 
         color: "#116611",  // Хүрээг нь арай бараан болгож ялгав
         weight: 1,      
-        fillOpacity: 0.3      // Цэгээ илүү тод харагдуулна
+        fillOpacity: 1      // Цэгээ илүү тод харагдуулна
     })
     .bindTooltip(`<b>${city.name}</b><br>${city.type}`, { // Төрлийг нь бас харуулж болно
         direction: 'top', 
