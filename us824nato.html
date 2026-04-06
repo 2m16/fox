@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="mn">
 <head>
@@ -110,6 +111,9 @@
         }
         .clock-value { font-size: 32px; font-weight: thin; color: #fff; line-height: 1; }
         .clock-label { font-size: 12px; font-weight: thin; color: #fff; margin-top: 5px; letter-spacing: 2px; }
+		
+		
+		
     </style>
 </head>
 <body>
@@ -136,6 +140,8 @@
 
 
 <div id="map"></div>
+
+
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/@joergdietrich/leaflet.terminator"></script>
@@ -1142,7 +1148,7 @@ natoStrategicBases.forEach(base => {
         radius: 40,           
         fillColor: "#ff0066", 
         color: "#ff0066",  
-        weight: 0.5,      
+        weight: 0.5,          // Хүрээний зураасны зузаан
         opacity: 0.6,         // Хүрээний тод байдал
         fillOpacity: 0.1      // 0.05-ыг 0.1 болгож үл ялиг тодруулав
     })
@@ -1153,6 +1159,345 @@ natoStrategicBases.forEach(base => {
     })
     .addTo(map);
 });
+
+
+
+
+
+
+
+
+// Хятадын эх газрын цэргийн баазууд
+const mainlandChinaBases = [
+    // 1. PLAN (People's Liberation Army Navy): Тэнгисийн цэргийн флотын баазууд
+    { name: "China, Ningbo Naval Base (East Sea Fleet HQ)", lat: 29.8683, lon: 121.5440, cmd: "PLAN" },
+    { name: "China, Zhoushan Submarine Base", lat: 29.9833, lon: 122.1667, cmd: "PLAN" },
+    { name: "China, Yulin Naval Base (Nuclear Submarines)", lat: 18.2105, lon: 109.5664, cmd: "PLAN" },
+    { name: "China, Zhanjiang Base (South Sea Fleet HQ)", lat: 21.1967, lon: 110.4031, cmd: "PLAN" },
+    { name: "China, Qingdao Naval Base (North Sea Fleet HQ)", lat: 36.0671, lon: 120.3826, cmd: "PLAN" },
+
+    // 2. PLAAF (People's Liberation Army Air Force): Агаарын цэргийн баазууд
+    { name: "China, Changxing Island Airbase", lat: 39.6233, lon: 121.3611, cmd: "PLAAF" },
+    { name: "China, Suixi Airbase (Strategic Fighters)", lat: 21.3964, lon: 110.1983, cmd: "PLAAF" },
+    { name: "China, Hotan Airbase (Border Operations)", lat: 37.0384, lon: 79.8646, cmd: "PLAAF" },
+    { name: "China, Kashgar Airbase", lat: 39.5428, lon: 76.0200, cmd: "PLAAF" },
+    { name: "China, Anshan Airbase (J-20 Squadron)", lat: 41.1053, lon: 122.8539, cmd: "PLAAF" },
+    { name: "China, Qiqihar Airbase", lat: 47.2394, lon: 123.9181, cmd: "PLAAF" },
+    { name: "China, Beijing Nanyuan Airbase", lat: 39.7828, lon: 116.3878, cmd: "PLAAF" },
+
+    // 3. PLARF (People's Liberation Army Rocket Force): Пуужингийн цэргийн баазууд (Цөмийн болон дунд тусгалын пуужингууд)
+    { name: "China, Base 61 Missile HQ, Yangshuo", lat: 24.7787, lon: 110.4907, cmd: "PLARF" },
+    { name: "China, Base 62 Missile HQ, Kunming", lat: 25.0389, lon: 102.7183, cmd: "PLARF" },
+    { name: "China, Base 64 ICBM Silos, Lanzhou", lat: 36.0611, lon: 103.8319, cmd: "PLARF" },
+    { name: "China, Base 65 Missile HQ, Shenyang", lat: 41.7922, lon: 123.4328, cmd: "PLARF" },
+    { name: "China, Base 66 ICBM HQ, Luoyang", lat: 34.6578, lon: 112.4475, cmd: "PLARF" },
+    { name: "China, Yumen ICBM Silo Field", lat: 40.3500, lon: 96.5333, cmd: "PLARF" },
+    { name: "China, Hami ICBM Silo Field", lat: 42.3333, lon: 92.8500, cmd: "PLARF" },
+
+    // 4. STRAT (Strategic Support Force / Space): Сансрын холбоо, хиймэл дагуул хөөргөх болон тагнуулын төвүүд
+    { name: "China, Malan Nuclear Test Site (Lop Nur)", lat: 41.7194, lon: 88.7378, cmd: "STRAT" },
+    { name: "China, Jiuquan Satellite Launch Center", lat: 40.9578, lon: 100.2917, cmd: "STRAT" },
+    { name: "China, Taiyuan Space Launch Center", lat: 38.8486, lon: 111.6081, cmd: "STRAT" }
+];
+
+mainlandChinaBases.forEach(base => {
+    // 1. Төв цэгт байрлах жижиг тод цэг
+    L.circleMarker([base.lat, base.lon], {
+        radius: 1,            // Хэт жижиг (1) байвал харагдахад хэцүү тул 2 болгов
+        fillColor: "#ac7339", 
+        color: "#ac7339",         
+        weight: 1,            
+        fillOpacity: 1,
+        pane: 'markerPane'    // Бусад элементүүдийн дээр харагдуулах
+    }).addTo(map);
+
+    // 2. Гадна талын том бүдэг тойрог (Радарын хүрээ)
+    L.circleMarker([base.lat, base.lon], {
+        radius: 18,           
+        fillColor: "#ac7339", 
+        color: "#ffffff",  
+        weight: 2,          // Хүрээний зураасны зузаан
+        opacity: 0.3,         // Хүрээний тод байдал
+        fillOpacity: 0.1      // 0.05-ыг 0.1 болгож үл ялиг тодруулав
+    })
+    .bindTooltip(base.name, { // 'city.name'-ийг 'base.name' болгож засав
+        direction: 'top', 
+        className: 'city-tooltip',
+        sticky: false          // true бол тип Хулганыг дагаж хөдлөнө. false бол хөдлөхгүй
+    })
+    .addTo(map);
+});
+
+
+
+
+// Хятадын хилийн чанадад цэргийн баазууд
+const chinaBases = [
+    // 1. Тэнгисийн цэргийн ложистик ба Флот (PLAN)
+    { name: "China, Djibouti Support Base, Djibouti", lat: 11.5891, lon: 43.0492, cmd: "PLAN" },
+    { name: "China, Ream Naval Base, Cambodia", lat: 10.5011, lon: 103.6014, cmd: "PLAN" },
+    { name: "China, Gwadar Port, Pakistan", lat: 25.1075, lon: 62.3256, cmd: "PLAN" },
+    { name: "China, Hambantota Port, Sri Lanka", lat: 6.1172, lon: 81.1044, cmd: "PLAN" },
+
+    // 2. Агаарын цэргийн бааз ба Пуужингийн хамгаалалт (PLAAF)
+    { name: "China, Mischief Reef Base, Spratly Islands", lat: 9.9172, lon: 115.5333, cmd: "PLAAF" },
+    { name: "China, Fiery Cross Reef, Spratly Islands", lat: 9.5501, lon: 112.9835, cmd: "PLAAF" },
+    { name: "China, Subi Reef Airfield, Spratly Islands", lat: 10.9142, lon: 114.1184, cmd: "PLAAF" },
+    { name: "China, Woody Island, Paracel Islands", lat: 16.8395, lon: 112.3386, cmd: "PLAAF" },
+
+    // 3. Стратегийн тагнуул, Радар болон Сансрын хяналт (STRAT)
+    { name: "China, Great Coco Island Radar, Myanmar", lat: 14.1167, lon: 93.3672, cmd: "STRAT" },
+    { name: "China, Tajikistan Border Outpost, GBAO", lat: 37.3014, lon: 74.3822, cmd: "STRAT" },
+    { name: "China, Neuquén Space Station, Argentina", lat: -38.1914, lon: -70.1495, cmd: "STRAT" },
+    { name: "China, Kyaukpyu Port, Myanmar", lat: 19.4231, lon: 93.5422, cmd: "STRAT" },
+    { name: "China, Khalifa Port Facility, UAE", lat: 24.8514, lon: 54.6185, cmd: "STRAT" },
+    { name: "China, Port of Malabo, Equatorial Guinea", lat: 3.7554, lon: 8.7812, cmd: "STRAT" }
+];
+
+chinaBases.forEach(base => {
+    // 1. Төв цэгт байрлах жижиг тод цэг
+    L.circleMarker([base.lat, base.lon], {
+        radius: 1,            // Хэт жижиг (1) байвал харагдахад хэцүү тул 2 болгов
+        fillColor: "#ac7339", 
+        color: "#ac7339",         
+        weight: 1,            
+        fillOpacity: 1,
+        pane: 'markerPane'    // Бусад элементүүдийн дээр харагдуулах
+    }).addTo(map);
+
+    // 2. Гадна талын том бүдэг тойрог (Радарын хүрээ)
+    L.circleMarker([base.lat, base.lon], {
+        radius: 18,           
+        fillColor: "#ac7339", 
+        color: "#ffffff",  
+        weight: 2,          // Хүрээний зураасны зузаан
+        opacity: 0.3,         // Хүрээний тод байдал
+        fillOpacity: 0.1      // 0.05-ыг 0.1 болгож үл ялиг тодруулав
+    })
+    .bindTooltip(base.name, { // 'city.name'-ийг 'base.name' болгож засав
+        direction: 'top', 
+        className: 'city-tooltip',
+        sticky: false          // true бол тип Хулганыг дагаж хөдлөнө. false бол хөдлөхгүй
+    })
+    .addTo(map);
+});
+
+
+
+
+
+
+//Оросын эх газрын цэргийн баазууд
+const russianBases = [
+    // 1. VMF (Voyenno-morskoy flot): Оросын Тэнгисийн Цэргийн Флот
+    { name: "Russia, Severomorsk Naval Base (Northern Fleet HQ)", lat: 69.0689, lon: 33.4162, cmd: "VMF" },
+    { name: "Russia, Sevastopol Naval Base (Black Sea Fleet HQ)", lat: 44.6167, lon: 33.5250, cmd: "VMF" },
+    { name: "Russia, Vladivostok Naval Base (Pacific Fleet HQ)", lat: 43.1150, lon: 131.8850, cmd: "VMF" },
+    { name: "Russia, Baltiysk Naval Base (Baltic Fleet HQ)", lat: 54.6400, lon: 19.8900, cmd: "VMF" },
+    { name: "Russia, Petropavlovsk-Kamchatsky Submarine Base", lat: 52.9167, lon: 158.5000, cmd: "VMF" },
+    { name: "Russia, Tartus Naval Support Facility, Syria", lat: 34.9125, lon: 35.8672, cmd: "VMF" },
+
+    // 2. VKS (Vozdushno-kosmicheskiye sily): Агаарын болон Сансрын Хүчин (Бөмбөгдөгч онгоц, сөнөөгч онгоц)
+    { name: "Russia, Engels-2 Strategic Bomber Base (Tu-160/95)", lat: 51.4833, lon: 46.2167, cmd: "VKS" },
+    { name: "Russia, Lipetsk Air Base (Combat Training Center)", lat: 52.6417, lon: 39.4417, cmd: "VKS" },
+    { name: "Russia, Khmeimim Air Base, Syria", lat: 35.4021, lon: 35.9467, cmd: "VKS" },
+    { name: "Russia, Savasleyka Air Base (MiG-31K/Kinzhal)", lat: 55.4533, lon: 42.3117, cmd: "VKS" },
+    { name: "Russia, Belbek Air Base, Crimea", lat: 44.6917, lon: 33.5750, cmd: "VKS" },
+    { name: "Russia, Olenya Air Base (Arctic Strategic Air)", lat: 68.1500, lon: 33.3000, cmd: "VKS" },
+
+    // 3. RVSN (Raketnye voyska strategicheskogo naznacheniya): Стратегийн Пуужингийн Хүчин (Цөмийн зэвсэг, тив алгасах пуужингууд)
+    { name: "Russia, Kozelsk Rocket Division (Yars/Silo)", lat: 54.0417, lon: 35.7833, cmd: "RVSN" },
+    { name: "Russia, Tatishchevo Missile Base (Topol-M Silos)", lat: 51.6667, lon: 45.7000, cmd: "RVSN" },
+    { name: "Russia, Uzhur Missile Division (Sarmat/Satan)", lat: 55.2833, lon: 89.8333, cmd: "RVSN" },
+    { name: "Russia, Dombarovsky Missile Site (Avangard HGV)", lat: 51.0500, lon: 59.8500, cmd: "RVSN" },
+    { name: "Russia, Yoskar-Ola Missile Division (Mobile Yars)", lat: 56.5500, lon: 48.0500, cmd: "RVSN" },
+
+    // 4. STRAT (Strategic/Foreign): Хилийн чанад дахь болон сансрын холбоо, туршилтын баазууд
+    { name: "Russia, Plesetsk Cosmodrome (Military Space)", lat: 62.9256, lon: 40.5778, cmd: "STRAT" },
+    { name: "Russia, Kapustin Yar Missile Test Range", lat: 48.5833, lon: 45.7167, cmd: "STRAT" },
+	
+	// 1. АРКТИК (Хойд мөсөн далайн хамгаалалт)
+    { name: "Russia, Nagurskoye Airbase (Arctic Trefoil)", lat: 80.8031, lon: 47.4417, cmd: "VKS" },
+    { name: "Russia, Temp Airbase (Kotelny Island)", lat: 75.7533, lon: 137.6417, cmd: "VKS" },
+    { name: "Russia, Rogachevo Airbase (Novaya Zemlya)", lat: 71.6167, lon: 52.4833, cmd: "VKS" },
+
+    // 2. АЛС ДОРНОД (Номхон далайн флот ба хилийн хамгаалалт)
+    { name: "Russia, Fokino Naval Base (Pacific Fleet Submarines)", lat: 42.9231, lon: 132.3850, cmd: "VMF" },
+    { name: "Russia, Ukrainka Airbase (Tu-95 Strategic Bombers)", lat: 51.1681, lon: 128.4414, cmd: "VKS" },
+    { name: "Russia, Komsomolsk-on-Amur Airbase (Su-57 Training)", lat: 50.6017, lon: 137.0817, cmd: "VKS" },
+
+    // 3. СТРАТЕГИЙН ПУУЖИНГИЙН НЭМЭЛТ ХҮЧИН (RVSN)
+    { name: "Russia, Teykovo Missile Division (Yars/Topol-M Mobile)", lat: 56.8417, lon: 40.5500, cmd: "RVSN" },
+    { name: "Russia, Irkutsk Missile Division (Strategic Mobile)", lat: 52.4167, lon: 104.3167, cmd: "RVSN" },
+    { name: "Russia, Barnaul Missile Division (Altay Region)", lat: 53.3467, lon: 83.7767, cmd: "RVSN" },
+    { name: "Russia, Vypolzovo Missile Division", lat: 57.8517, lon: 33.6817, cmd: "RVSN" },
+
+    // 4. ТАГНУУЛ, РАДАР БА ТУСГАЙ ОБЪЕКТУУД (STRAT)
+    { name: "Russia, Voronezh-DM Radar Station (Krasnoyarsk)", lat: 56.1317, lon: 92.2167, cmd: "STRAT" },
+    { name: "Russia, Voronezh-VP Radar Station (Irkutsk)", lat: 52.8517, lon: 102.7833, cmd: "STRAT" },
+    { name: "Russia, Mount Yamantau (Strategic Command Bunker)", lat: 54.2589, lon: 58.1014, cmd: "STRAT" },
+    { name: "Russia, Chekhov-2 (General Staff Command Center)", lat: 55.1500, lon: 37.4667, cmd: "STRAT" },
+    { name: "Russia, Severodvinsk Naval Shipyard (Submarine Hub)", lat: 64.5750, lon: 39.8517, cmd: "VMF" },
+
+    // 5. ЕВРОПЫН ХЭСЭГ (Баруун ба Өмнөд тойрог)
+    { name: "Russia, Chkalovsk Airbase (Kaliningrad Exclave)", lat: 54.7667, lon: 20.4000, cmd: "VKS" },
+    { name: "Russia, Solytsy Airbase (Tu-22M3 Bombers)", lat: 58.1517, lon: 30.3317, cmd: "VKS" },
+    { name: "Russia, Shaykovka Airbase (Strategic Aviation)", lat: 54.2267, lon: 34.3633, cmd: "VKS" }
+];
+
+russianBases.forEach(base => {
+    // 1. Төв цэгт байрлах жижиг тод цэг
+    L.circleMarker([base.lat, base.lon], {
+        radius: 1,            // Хэт жижиг (1) байвал харагдахад хэцүү тул 2 болгов
+        fillColor: "#ffffff", 
+        color: "#ffffff",         
+        weight: 1,            
+        fillOpacity: 1,
+        pane: 'markerPane'    // Бусад элементүүдийн дээр харагдуулах
+    }).addTo(map);
+
+    // 2. Гадна талын том бүдэг тойрог (Радарын хүрээ)
+    L.circleMarker([base.lat, base.lon], {
+        radius: 18,           
+        fillColor: "#ffffff", 
+        color: "#ff1a8c",  
+        weight: 2,          // Хүрээний зураасны зузаан
+        opacity: 0.3,         // Хүрээний тод байдал
+        fillOpacity: 0.1      // 0.05-ыг 0.1 болгож үл ялиг тодруулав
+    })
+    .bindTooltip(base.name, { // 'city.name'-ийг 'base.name' болгож засав
+        direction: 'top', 
+        className: 'city-tooltip',
+        sticky: false          // true бол тип Хулганыг дагаж хөдлөнө. false бол хөдлөхгүй
+    })
+    .addTo(map);
+});
+
+
+
+// Оросын хилийн чанадад цэргийн бааз, байгууламжууд
+const russianOverseasBases = [
+    // 1. СИРИ (Ойрхи Дорнод дахь стратегийн гол түшиц газар)
+    { name: "Russia, Tartus Naval Logistics Facility, Syria", lat: 34.9125, lon: 35.8672, cmd: "VMF" },
+    { name: "Russia, Khmeimim Air Base, Syria", lat: 35.4021, lon: 35.9467, cmd: "VKS" },
+
+    // 2. ТӨВ АЗИ (Хуучин ЗХУ-ын бүрэлдэхүүнд байсан орнууд)
+    { name: "Russia, 201st Military Base, Tajikistan (Dushanbe)", lat: 38.5333, lon: 68.7833, cmd: "STRAT" },
+    { name: "Russia, Kant Air Base, Kyrgyzstan", lat: 42.8533, lon: 74.8469, cmd: "VKS" },
+    { name: "Russia, Sary Shagan Test Range, Kazakhstan", lat: 46.3833, lon: 72.8667, cmd: "STRAT" },
+    { name: "Russia, Baikonur Cosmodrome, Kazakhstan", lat: 45.9645, lon: 63.3052, cmd: "STRAT" },
+
+    // 3. КАВКАЗЫН БҮС (Стратегийн хяналт)
+    { name: "Russia, 102nd Military Base, Gyumri, Armenia", lat: 40.7833, lon: 43.8333, cmd: "STRAT" },
+    { name: "Russia, 4th Military Base, South Ossetia (Tskhinvali)", lat: 42.2256, lon: 43.9667, cmd: "STRAT" },
+    { name: "Russia, 7th Military Base, Abkhazia (Gudauta)", lat: 43.1000, lon: 40.6333, cmd: "STRAT" },
+
+    // 4. ЕВРОП (Зүүн Европ дахь хяналт)
+    { name: "Russia, Baranovichi Radar Station, Belarus", lat: 52.8533, lon: 26.4833, cmd: "STRAT" },
+    { name: "Russia, Vileyka Naval Communications Center, Belarus", lat: 54.4667, lon: 26.7500, cmd: "VMF" },
+    { name: "Russia, obasna Ammunition Depot, Transnistria (Moldova)", lat: 47.7556, lon: 29.2139, cmd: "STRAT" },
+
+    // 5. АФРИК БА БУСАД (Шинээр үүсэж буй болон тагнуулын цэгүүд)
+    { name: "Russia, Port Sudan Naval Base (Planned), Sudan", lat: 19.6100, lon: 37.2200, cmd: "VMF" },
+    { name: "Russia, Lourdes SIGINT Facility (Reported Reactivation), Cuba", lat: 22.9947, lon: -82.4794, cmd: "STRAT" },
+    { name: "Russia, Cam Ranh Bay Support Facility, Vietnam", lat: 11.9167, lon: 109.1667, cmd: "VMF" }
+];
+
+russianOverseasBases.forEach(base => {
+    // 1. Төв цэгт байрлах жижиг тод цэг
+    L.circleMarker([base.lat, base.lon], {
+        radius: 1,            // Хэт жижиг (1) байвал харагдахад хэцүү тул 2 болгов
+        fillColor: "#ffffff", 
+        color: "#ffffff",         
+        weight: 1,            
+        fillOpacity: 1,
+        pane: 'markerPane'    // Бусад элементүүдийн дээр харагдуулах
+    }).addTo(map);
+
+    // 2. Гадна талын том бүдэг тойрог (Радарын хүрээ)
+    L.circleMarker([base.lat, base.lon], {
+        radius: 18,           
+        fillColor: "#ffffff", 
+        color: "#ff1a8c",  
+        weight: 2,          // Хүрээний зураасны зузаан
+        opacity: 0.3,         // Хүрээний тод байдал
+        fillOpacity: 0.1      // 0.05-ыг 0.1 болгож үл ялиг тодруулав
+    })
+    .bindTooltip(base.name, { // 'city.name'-ийг 'base.name' болгож засав
+        direction: 'top', 
+        className: 'city-tooltip',
+        sticky: false          // true бол тип Хулганыг дагаж хөдлөнө. false бол хөдлөхгүй
+    })
+    .addTo(map);
+});
+
+
+
+
+
+
+
+// Ираны цэргийн баазууд
+const iranBases = [
+    // 1. ТЭНГИСИЙН ЦЭРГИЙН БААЗУУД (Ормузын хоолой ба Персийн булан)
+    { name: "Iran, Bandar Abbas Naval Base (IRGC/Artesh HQ)", lat: 27.1500, lon: 56.2167, cmd: "PLAN" },
+    { name: "Iran, Bushehr Naval Base", lat: 28.9333, lon: 50.8333, cmd: "PLAN" },
+    { name: "Iran, Chabahar Naval Base (Gulf of Oman)", lat: 25.2833, lon: 60.6167, cmd: "PLAN" },
+    { name: "Iran, Jask Naval Base", lat: 25.6500, lon: 57.7833, cmd: "PLAN" },
+    { name: "Iran, Kish Island Base", lat: 26.5256, lon: 53.9889, cmd: "PLAN" },
+
+    // 2. АГААРЫН ЦЭРГИЙН БААЗУУД (IRIAF)
+    { name: "Iran, Mehrabad Airbase, Tehran", lat: 35.6883, lon: 51.3147, cmd: "PLAAF" },
+    { name: "Iran, Isfahan Airbase (F-14 Tomcat Hub)", lat: 32.7508, lon: 51.8614, cmd: "PLAAF" },
+    { name: "Iran, Tabriz Airbase (Northwest Defense)", lat: 38.1256, lon: 46.2417, cmd: "PLAAF" },
+    { name: "Iran, Shiraz Airbase", lat: 29.5392, lon: 52.5897, cmd: "PLAAF" },
+    { name: "Iran, Hamadan Airbase (Nojeh)", lat: 35.2117, lon: 48.6522, cmd: "PLAAF" },
+
+    // 3. ПУУЖИНГИЙН БААЗУУД БА ГАЗАР ДООРХ ХОТХОНУУД (IRGC Missile Force)
+    { name: "Iran, Semnan Missile Launch Site", lat: 35.2333, lon: 53.9167, cmd: "PLARF" },
+    { name: "Iran, Kermanshah Missile Complex", lat: 34.3500, lon: 47.1167, cmd: "PLARF" },
+    { name: "Iran, Tabriz Underground Missile City", lat: 38.0833, lon: 46.2833, cmd: "PLARF" },
+    { name: "Iran, Bakhtaran Missile Base", lat: 34.3167, lon: 47.0667, cmd: "PLARF" },
+
+    // 4. ЦӨМИЙН БА СТРАТЕГИЙН ОБЪЕКТУУД (STRAT)
+    { name: "Iran, Natanz Uranium Enrichment Plant", lat: 33.7250, lon: 51.7250, cmd: "STRAT" },
+    { name: "Iran, Fordo Fuel Enrichment Plant (Underground)", lat: 34.8847, lon: 50.9958, cmd: "STRAT" },
+    { name: "Iran, Arak Heavy Water Plant", lat: 34.1136, lon: 49.2411, cmd: "STRAT" },
+    { name: "Iran, Bushehr Nuclear Power Plant", lat: 28.8314, lon: 50.8864, cmd: "STRAT" },
+    { name: "Iran, Anarak Nuclear Waste Site", lat: 33.3117, lon: 53.7000, cmd: "STRAT" }
+];
+
+iranBases.forEach(base => {
+    // 1. Төв цэгт байрлах жижиг тод цэг
+    L.circleMarker([base.lat, base.lon], {
+        radius: 1,            // Хэт жижиг (1) байвал харагдахад хэцүү тул 2 болгов
+        fillColor: "#ffffff", 
+        color: "#33ff33",         
+        weight: 1,            
+        fillOpacity: 1,
+        pane: 'markerPane'    // Бусад элементүүдийн дээр харагдуулах
+    }).addTo(map);
+
+    // 2. Гадна талын том бүдэг тойрог (Радарын хүрээ)
+    L.circleMarker([base.lat, base.lon], {
+        radius: 18,           
+        fillColor: "#ffffff", 
+        color: "#33ff33",  
+        weight: 2,          // Хүрээний зураасны зузаан
+        opacity: 0.3,         // Хүрээний тод байдал
+        fillOpacity: 0.1      // 0.05-ыг 0.1 болгож үл ялиг тодруулав
+    })
+    .bindTooltip(base.name, { // 'city.name'-ийг 'base.name' болгож засав
+        direction: 'top', 
+        className: 'city-tooltip',
+        sticky: false          // true бол тип Хулганыг дагаж хөдлөнө. false бол хөдлөхгүй
+    })
+    .addTo(map);
+});
+
+
+
+
 
 
 
@@ -1280,65 +1625,58 @@ cities.forEach(city => {
 
 
 
+
+
+
 const ukrcities = [
-    // --- Украйны Нийслэл болон Хойд бүс ---
     { name: "Kyiv", lat: 50.4501, lon: 30.5234, type: "Capital" },
     { name: "Chernihiv", lat: 51.4982, lon: 31.2893, type: "Strategic" },
     { name: "Sumy", lat: 50.9077, lon: 34.7981, type: "Frontier" },
-
-    // --- Украйны Зүүн бүс (Хамгийн идэвхтэй фронт) ---
     { name: "Kharkiv", lat: 49.9935, lon: 36.2304, type: "Strategic" },
     { name: "Donetsk", lat: 48.0159, lon: 37.8028, type: "Contested" },
     { name: "Luhansk", lat: 48.5740, lon: 39.3078, type: "Contested" },
     { name: "Bakhmut", lat: 48.5956, lon: 38.0084, type: "Frontline" },
     { name: "Avdiivka", lat: 48.1451, lon: 37.7448, type: "Frontline" },
     { name: "Dnipro", lat: 48.4647, lon: 35.0462, type: "Logistics Hub" },
-
-    // --- Украйны Өмнөд бүс болон Хар тэнгис ---
     { name: "Odesa", lat: 46.4825, lon: 30.7233, type: "Port" },
     { name: "Kherson", lat: 46.6354, lon: 32.6169, type: "Strategic" },
     { name: "Mykolaiv", lat: 46.9750, lon: 31.9946, type: "Port" },
-    { name: "Mariupol", lat: 47.0971, lon: 37.5433, type: "Port" },
+    { name: "Mariupol", lat: 47.0971, lon: 37.5433, type: "Frontline" },
     { name: "Zaporizhzhia", lat: 47.8388, lon: 35.1396, type: "Energy Hub" },
     { name: "Sevastopol (Crimea)", lat: 44.6167, lon: 33.5250, type: "Naval Base" },
-
-    // --- Украйны Баруун бүс (Ложистик ба Ар тал) ---
     { name: "Lviv", lat: 49.8397, lon: 24.0297, type: "Logistics Hub" },
     { name: "Vinnytsia", lat: 49.2331, lon: 28.4682, type: "Strategic" },
     { name: "Ivano-Frankivsk", lat: 48.9226, lon: 24.7111, type: "Strategic" }
 ];
 
 
-// Хотуудыг зураг дээр дугуй цэгээр зурах
 ukrcities.forEach(city => {
-    
-    // 1. Төв цэгт байрлах жижиг тод цэг
+    // Үндсэн цэг
     L.circleMarker([city.lat, city.lon], {
-        radius: 1,            // Хэт жижиг (1) байвал харагдахад хэцүү тул 2 болгов
+        radius: 5,            
         fillColor: "#33ff33", 
-        color: "#33ff33",         
-        weight: 1,            
-        fillOpacity: 1,
-        pane: 'markerPane'    // Бусад элементүүдийн дээр харагдуулах
-    }).addTo(map);
-
-    // 2. Гадна талын том бүдэг тойрог (Радарын хүрээ)
-    L.circle([city.lat, city.lon], {
-        radius: 50000,           
-        fillColor: "#33ff33", 
-        color: "#33ff33",  
-        weight: 0.5,      
-        opacity: 0.6,         // Хүрээний тод байдал
-        fillOpacity: 0.1      // 0.05-ыг 0.1 болгож үл ялиг тодруулав
+        color: "#116611",  // Хүрээг нь арай бараан болгож ялгав
+        weight: 1,      
+        fillOpacity: 0.3      // Цэгээ илүү тод харагдуулна
     })
-    .bindTooltip(city.name, { 
+    .bindTooltip(`<b>${city.name}</b><br>${city.type}`, { // Төрлийг нь бас харуулж болно
         direction: 'top', 
         className: 'city-tooltip',
-        sticky: false          // true бол тип Хулганыг дагаж хөдлөнө. false бол хөдлөхгүй
     })
     .addTo(map);
-});
 
+    // Нэмэлт: Хэрэв "Frontline" эсвэл "Contested" бол радар эффект нэмэх
+    if (city.type === "Frontline" || city.type === "Contested") {
+        L.circleMarker([city.lat, city.lon], {
+            radius: 15, 
+            color: "#ff3300", 
+            fillColor: "#ff3300",
+            fillOpacity: 0.1,
+            weight: 0.5,
+            className: 'radar-pulse' 
+        }).addTo(map);
+    }
+});
 
 
 
