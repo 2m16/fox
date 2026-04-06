@@ -1323,8 +1323,8 @@ ukrcities.forEach(city => {
     }).addTo(map);
 
     // 2. Гадна талын том бүдэг тойрог (Радарын хүрээ)
-    L.circleMarker([city.lat, city.lon], {
-        radius: 15,           
+    L.circle([city.lat, city.lon], {
+        radius: 50000,           
         fillColor: "#33ff33", 
         color: "#33ff33",  
         weight: 0.5,      
