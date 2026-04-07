@@ -161,7 +161,10 @@
 
 
 	// 1 Б. Газрын зургийн суурь (Tile Layer) нэмэх
-	L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map); // шөнийн зураг максзүүм20, дата анализ зориулалттай
+	L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    noWrap: true, // Зургийг давтахгүй
+    bounds: [[-90, -180], [90, 180]] // Зөвхөн энэ хүрээнд зураг ачаална
+		).addTo(map); // шөнийн зураг максзүүм20, дата анализ зориулалттай
 	// L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map); // өдрийн зураг, цэнхэр далай
 	// L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map); // өдрийн зураг, саарал далай, мэдээллийн график зориулалттай
 	// L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}').addTo(map); // гол усны зураг максзүүм13
@@ -174,14 +177,6 @@
 	// 1 В. ТАНЫ КОД ЭНД БАЙРЛАНА
 	const worldBounds = L.latLngBounds([-90, -180], [90, 180]);
 	map.fitBounds(worldBounds);
-
-
-
-
-
-
-
-
 
 
 
