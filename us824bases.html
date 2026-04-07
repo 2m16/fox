@@ -152,7 +152,9 @@
 
 	// 1 А. Газрын зураг MAP үүсгэх
     const map = L.map('map', {
-        zoomControl: false
+        zoomControl: false,
+		continuousWorld: false, // Дэлхийг үргэлжлүүлэхгүй
+		noWrap: true // Энэ нь хамгийн чухал! Дэлхийг ороож давтахыг зогсооно
     });
 
 
@@ -172,8 +174,6 @@
 	// 1 В. ТАНЫ КОД ЭНД БАЙРЛАНА
 	const worldBounds = L.latLngBounds([-90, -180], [90, 180]);
 	map.fitBounds(worldBounds);
-
-
 
 
 
