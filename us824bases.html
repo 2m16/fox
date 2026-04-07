@@ -2058,18 +2058,50 @@ oceaniaCapitals.forEach(city => {
         .then(res => res.json())
         .then(data => {
             L.geoJSON(data, {
-                style: { color: '#fff', weight: 0.1, fillColor: "#0066ff", fillOpacity: 0.03 }
+                style: { 
+					color: '#fff', // хилийн зураасны өнгө
+					weight: 0.1, // хилийн зураасны зузаан
+					opacity: 1, // хилийн зураасны тунгалаг
+					fillColor: "#0066ff", // газар нутгийг дүүргэсэн өнгө
+					fillOpacity: 0.03 // газар нутгийг дүүргэсэн өнгөний тунгалаг
+				}
             }).addTo(map);
         });
 
 
-    fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/UKR.geo.json')
+	
+
+	fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/UKR.geo.json')
         .then(res => res.json())
         .then(data => {
             L.geoJSON(data, {
-                style: { color: '#fff', weight: 0.1, fillColor: "#0066ff", fillOpacity: 0.03 }
+                style: { 
+					color: '#fff', // хилийн зураасны өнгө
+					weight: 0.1, // хилийн зураасны зузаан
+					opacity: 1, // хилийн зураасны тунгалаг
+					fillColor: "#0066ff", // газар нутгийг дүүргэсэн өнгө
+					fillOpacity: 0.03 // газар нутгийг дүүргэсэн өнгөний тунгалаг
+				}
             }).addTo(map);
         });
+
+
+
+
+	fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/IRN.geo.json')
+        .then(res => res.json())
+        .then(data => {
+            L.geoJSON(data, {
+                style: { 
+					color: '#fff', // хилийн зураасны өнгө
+					weight: 0.1, // хилийн зураасны зузаан
+					opacity: 1, // хилийн зураасны тунгалаг
+					fillColor: "#0066ff", // газар нутгийг дүүргэсэн өнгө
+					fillOpacity: 0.03 // газар нутгийг дүүргэсэн өнгөний тунгалаг
+				}
+            }).addTo(map);
+        });	
+
 
 
 
