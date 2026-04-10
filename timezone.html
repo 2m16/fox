@@ -811,7 +811,7 @@ oceaniaCapitals.forEach(city => {
         .then(res => res.json())
         .then(data => {
             L.geoJSON(data, {
-                style: { color: '#ffffff', weight: 0.2, fillColor: '#FF1801', fillOpacity: 0.2 }
+                style: { color: '#ffffff', weight: 0.1, fillColor: '#4d79ff', fillOpacity: 0.1 }
             }).addTo(map);
         });
 
@@ -820,7 +820,7 @@ oceaniaCapitals.forEach(city => {
         .then(res => res.json())
         .then(data => {
             L.geoJSON(data, {
-                style: { color: '#ffffff', weight: 0.2, fillColor: '#00ccff', fillOpacity: 0.2 }
+                style: { color: '#ffffff', weight: 0.1, fillColor: '#4d79ff', fillOpacity: 0.1 }
             }).addTo(map);
         });
 
