@@ -811,11 +811,20 @@ oceaniaCapitals.forEach(city => {
         .then(res => res.json())
         .then(data => {
             L.geoJSON(data, {
-                style: { color: '#ffffff', weight: 0.1, fillColor: '#000', fillOpacity: 0 }
+                style: { color: '#ffffff', weight: 0.8, fillColor: '#000', fillOpacity: 0 }
             }).addTo(map);
         });
 
-	fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/DEU.geo.json')
+	fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/IRN.geo.json')
+
+        .then(res => res.json())
+        .then(data => {
+            L.geoJSON(data, {
+                style: { color: '#ffffff', weight: 0.1, fillColor: '#4d79ff', fillOpacity: 0.1 }
+            }).addTo(map);
+        });
+
+	fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/UKR.geo.json')
 
         .then(res => res.json())
         .then(data => {
