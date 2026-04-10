@@ -390,7 +390,6 @@ const europeanCapitals = [
     { name: "Stockholm, Sweden", lat: 59.3293, lon: 18.0686 },
     { name: "Bern, Switzerland", lat: 46.9480, lon: 7.4474 },
     { name: "London, United Kingdom", lat: 51.5074, lon: -0.1278 },
-    { name: "Kiev, Ukraine", lat: 50.4501, lon: 30.5234 },
     { name: "Vatican City", lat: 41.9029, lon: 12.4534 },
 
 	    // Бусад бүс нутаг
@@ -417,6 +416,59 @@ europeanCapitals.forEach(city => {
 
 
 
+
+
+// УКРАЙНЫ ХОТУУД
+const ukraineCities = [
+{ name: "Kyiv, Ukraine", lat: 50.4501, lon: 30.5234 },
+    { name: "Kharkiv, Ukraine", lat: 49.9935, lon: 36.2304 },
+    { name: "Odesa, Ukraine", lat: 46.4825, lon: 30.7233 },
+    { name: "Dnipro, Ukraine", lat: 48.4647, lon: 35.0462 },
+    { name: "Donetsk, Ukraine", lat: 48.0159, lon: 37.8028 },
+    { name: "Zaporizhzhia, Ukraine", lat: 47.8388, lon: 35.1396 },
+    { name: "Lviv, Ukraine", lat: 49.8397, lon: 24.0297 },
+    { name: "Kryvyi Rih, Ukraine", lat: 47.9105, lon: 33.3918 },
+    { name: "Mykolaiv, Ukraine", lat: 46.9750, lon: 31.9946 },
+    { name: "Sevastopol, Ukraine", lat: 44.6167, lon: 33.5254 },
+    { name: "Luhansk, Ukraine", lat: 48.5740, lon: 39.3078 },
+    { name: "Vinnytsia, Ukraine", lat: 49.2331, lon: 28.4682 },
+    { name: "Simferopol, Ukraine", lat: 44.9521, lon: 34.1024 },
+    { name: "Kherson, Ukraine", lat: 46.6354, lon: 32.6169 },
+    { name: "Poltava, Ukraine", lat: 49.5883, lon: 34.5514 },
+    { name: "Chernihiv, Ukraine", lat: 51.4982, lon: 31.2893 },
+    { name: "Cherkasy, Ukraine", lat: 49.4444, lon: 32.0598 },
+    { name: "Sumy, Ukraine", lat: 50.9077, lon: 34.7981 },
+    { name: "Zhytomyr, Ukraine", lat: 50.2547, lon: 28.6587 },
+    { name: "Khmelnytskyi, Ukraine", lat: 49.4230, lon: 26.9871 },
+    { name: "Chernivtsi, Ukraine", lat: 48.2917, lon: 25.9352 },
+    { name: "Rivne, Ukraine", lat: 50.6199, lon: 26.2516 },
+    { name: "Ivano-Frankivsk, Ukraine", lat: 48.9226, lon: 24.7111 },
+    { name: "Kropyvnytskyi, Ukraine", lat: 48.5079, lon: 32.2623 },
+    { name: "Ternopil, Ukraine", lat: 49.5535, lon: 25.5948 },
+    { name: "Lutsk, Ukraine", lat: 50.7472, lon: 25.3254 },
+    { name: "Uzhhorod, Ukraine", lat: 48.6208, lon: 22.2879 }
+];
+
+// Хотуудыг нэмэх функц (Таны кодын cities массив дотор нэмж болно)
+ukraineCities.forEach(city => {
+    L.circleMarker([city.lat, city.lon], {
+        radius: 2,
+        fillColor: "#00d4ff",
+        color: "#fff",
+        weight: 0,
+        opacity: 0,
+        fillOpacity: 1
+    })
+    .bindTooltip(city.name, { 
+        direction: 'top', 
+        className: 'city-label',
+        offset: [0, -5]
+    })
+    .addTo(map);
+});
+
+
+	
 
 
 
