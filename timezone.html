@@ -861,7 +861,7 @@ addRow(["03", "Melbourne", "--:--.---", "0", "Scheduled", "TBD", "kk"]);
 
 
 
-    // 8. UPDATE LOOP
+// 8. UPDATE LOOP
     function sync() {
         const now = new Date();
         const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
@@ -883,9 +883,9 @@ addRow(["03", "Melbourne", "--:--.---", "0", "Scheduled", "TBD", "kk"]);
            
            
            
-            // 9. TIMEZONE LABEL VERTICAL POSITION
-            const margin = 1 / Math.pow(2, map.getZoom() - 2); 
-            tz.label.setLatLng([north - margin, tz.offset * 15]);
+// 9. TIMEZONE LABEL VERTICAL POSITION
+	const margin = 1 / Math.pow(2, map.getZoom() - 2); 
+        tz.label.setLatLng([north - margin, tz.offset * 15]);
         });
 
         const p = (n) => n.toString().padStart(2, '0');
