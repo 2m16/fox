@@ -11,6 +11,8 @@
 
 
 
+		
+
 		/* TIMEZONE LABEL */
 		.tz-dynamic-label {
 			background: rgba(10, 15, 20, 0.04); /* Хайрцагны арын өнгө (тунгалаг хар) */
@@ -65,7 +67,7 @@
     		border: 1px solid #333;
     		backdrop-filter: blur(5px);
 
-    	/* СКРОЛЛДОХГҮЙ БОЛГОХ ТОХИРГОО */
+    	/* ХҮСНЭГТИЙГ БОСООГООРОО СКРОЛЛДОХГҮЙ БОЛГОХ ТОХИРГОО */
     		overflow: visible;         /* Доторх зүйл нь ил гарвал контейнер дагаж томорно */
     		height: auto;              /* Өндөр нь мөр нэмэгдэхэд автоматаар сунана */
     		width: fit-content;        /* Өргөн нь багана нэмэгдэхэд баруун тийш сунана */
@@ -102,6 +104,9 @@
 
 
 
+
+		
+
         /* БАРУУН ДООД ЦАГ */
         #central-clock-container {
             position: absolute; bottom: 10px; right: 10px; z-index: 1000;
@@ -113,15 +118,30 @@
 
 		
     </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </head>
+<body>
+
 
 
 
 
 
 	
-<body>
-
 
 
 
@@ -136,6 +156,12 @@
     </table>
 </div>
 
+
+
+
+
+
+	
 <div id="central-clock-container">
     <div id="hud-date">--.--.----</div>
     <div id="hud-day">---</div>
@@ -144,6 +170,8 @@
 </div>
 
 
+
+	
 
 
 <div id="map"></div>
@@ -1129,6 +1157,18 @@ addRow(["03", "Melbourne", "--:--.---", "0", "Scheduled", "TBD", "kk"]);
     setInterval(sync, 1000);
     sync();
 
+
+
+
+
+
+
+
+
+
+
+
+	
 </script>
 </body>
 </html>
